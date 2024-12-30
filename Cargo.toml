@@ -1,0 +1,17 @@
+[package]
+name = "ht"
+authors = ["FX | x.com => @a_ix_d"]
+description = "The HypeTerminal Program"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+anchor-lang = "0.30.1"
+anchor-spl = "0.30.1"
+
+[lib]
+crate-type = ["cdylib", "lib"]
