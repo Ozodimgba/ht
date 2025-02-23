@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[error_code]
-pub enum HypeterminalError {
+pub enum HypeBondError {
     #[msg("The program has already been initialized.")]
     AlreadyInitialized,
     
@@ -24,5 +24,11 @@ pub enum HypeterminalError {
     BondingCurveComplete,
 
     #[msg("SOL received too little")]
-    TooLittleSolReceived
+    TooLittleSolReceived,
+
+    #[msg("Invalid percentage allocations")]
+    InvalidPercentages,
+
+    #[msg("Invalid milestone count")]
+    InvalidMilestoneCount,
 }

@@ -1,5 +1,5 @@
 pub const SMALL_TRADE_THRESHOLD: u64 = 1000;
 pub const MEDIUM_TRADE_THRESHOLD: u64 = 10000;
-pub const LARGE_TRADE_THRESHOLD: u64 = 100000;
+// pub const LARGE_TRADE_THRESHOLD: u64 = 100000;
 pub const VOLUME_THRESHOLD: u64 = 1_000_000;
-pub const MAX_SLIPPAGE: u64 = 120; // 20% max slippage
+pub const MAX_SLIPPAGE: u64 = 120; 

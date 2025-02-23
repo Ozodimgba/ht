@@ -3,17 +3,22 @@ use anchor_spl::{
     token::{self, Mint, Token, TokenAccount},
     associated_token::AssociatedToken,
 };
+use streamflow_sdk::cpi::accounts::Create as StreamCreate;
 use curve::BondingCurve;
 
 mod errors;
 mod curve;
 mod constants;
+mod instructions;
+
+mod contexts;
+use contexts::*;
 
 declare_id!("BiGyz1fq35QxV357XKBUxVHXaHim9MnEk51J9aRB9FBZ");
 
 #[program]
-mod hype_terminal {
-    use errors::HypeterminalError;
+mod hype_bond {
+    use errors::HypeBondError;
 
     use super::*;
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
@@ -32,10 +37,10 @@ mod hype_terminal {
         token_total_supply: u64,
         fee_basis_points: u64,
     ) -> Result<()> {
-        require!(ctx.accounts.global.initialized, HypeterminalError::NotInitialized);
+        require!(ctx.accounts.global.initialized, HypeBondError::NotInitialized);
         require!(
             ctx.accounts.user.key() == ctx.accounts.global.authority,
-            HypeterminalError::NotAuthorized
+            HypeBondError::NotAuthorized
         );
 
         let global = &mut ctx.accounts.global;
@@ -63,7 +68,7 @@ mod hype_terminal {
         
         // 2. Calculate price using bonding curve formula
         let sol_required = curve.calculate_buy_price(amount)?;
-        require!(sol_required <= max_sol_cost, HypeterminalError::TooMuchSolRequired);
+        require!(sol_required <= max_sol_cost, HypeBondError::TooMuchSolRequired);
     
         // 3. Calculate fee
         let fee_amount = sol_required
@@ -125,15 +130,15 @@ mod hype_terminal {
         let user = &ctx.accounts.user;
         let global = &ctx.accounts.global;
         
-        require!(!curve.complete, HypeterminalError::BondingCurveComplete);
+        require!(!curve.complete, HypeBondError::BondingCurveComplete);
         require!(
             amount >= curve.min_trade_amount && amount <= curve.max_trade_amount,
-            HypeterminalError::InvalidTradeSize
+            HypeBondError::InvalidTradeSize
         );
     
         // 2. Calculate SOL output using bonding curve with sell protections
         let sol_output = curve.calculate_sell_price(amount)?;
-        require!(sol_output >= min_sol_output, HypeterminalError::TooLittleSolReceived);
+        require!(sol_output >= min_sol_output, HypeBondError::TooLittleSolReceived);
     
         // 3. Calculate fee (from SOL output)
         let fee_amount = sol_output

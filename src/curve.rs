@@ -5,7 +5,7 @@ use crate::constants::{
     SMALL_TRADE_THRESHOLD, 
     VOLUME_THRESHOLD
 };
-use crate::errors::HypeterminalError;
+use crate::errors::HypeBondError;
 use crate::constant;
 
 #[account]
@@ -33,28 +33,28 @@ impl BondingCurve {
     pub fn get_base_price(&self, amount: u64, is_buy: bool) -> Result<u64> {
         let k = self.virtual_token_reserves
             .checked_mul(self.virtual_sol_reserves)
-            .ok_or(HypeterminalError::MathOverflow)?;
+            .ok_or(HypeBondError::MathOverflow)?;
 
         if is_buy {
             let new_token_reserves = self.virtual_token_reserves
                 .checked_add(amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             let new_sol_reserves = k / new_token_reserves;
             
             self.virtual_sol_reserves
                 .checked_sub(new_sol_reserves)
-                .ok_or(HypeterminalError::MathOverflow.into())
+                .ok_or(HypeBondError::MathOverflow.into())
         } else {
             let new_token_reserves = self.virtual_token_reserves
                 .checked_sub(amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             let new_sol_reserves = k / new_token_reserves;
             
             new_sol_reserves
                 .checked_sub(self.virtual_sol_reserves)
-                .ok_or(HypeterminalError::MathOverflow.into())
+                .ok_or(HypeBondError::MathOverflow.into())
         }
     }
 
@@ -88,7 +88,7 @@ impl BondingCurve {
             .checked_mul(dynamic_multiplier)
             .unwrap()
             .checked_div(10000)
-            .ok_or(HypeterminalError::MathOverflow.into())
+            .ok_or(HypeBondError::MathOverflow.into())
     }
 
     // Protective sell price calculation
@@ -121,7 +121,7 @@ impl BondingCurve {
             .checked_mul(dynamic_multiplier)
             .unwrap()
             .checked_div(10000)
-            .ok_or(HypeterminalError::MathOverflow.into())
+            .ok_or(HypeBondError::MathOverflow.into())
     }
 
     // Update reserves after trade
@@ -134,35 +134,35 @@ impl BondingCurve {
         if is_buy {
             self.virtual_token_reserves = self.virtual_token_reserves
                 .checked_add(token_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             self.virtual_sol_reserves = self.virtual_sol_reserves
                 .checked_sub(sol_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             self.real_token_reserves = self.real_token_reserves
                 .checked_sub(token_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             self.real_sol_reserves = self.real_sol_reserves
                 .checked_add(sol_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
         } else {
             self.virtual_token_reserves = self.virtual_token_reserves
                 .checked_sub(token_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             self.virtual_sol_reserves = self.virtual_sol_reserves
                 .checked_add(sol_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             self.real_token_reserves = self.real_token_reserves
                 .checked_add(token_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
             
             self.real_sol_reserves = self.real_sol_reserves
                 .checked_sub(sol_amount)
-                .ok_or(HypeterminalError::MathOverflow)?;
+                .ok_or(HypeBondError::MathOverflow)?;
         }
         Ok(())
     }

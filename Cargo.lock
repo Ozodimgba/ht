@@ -1078,6 +1078,7 @@ version = "0.1.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
+ "streamflow-sdk",
 ]
 
 [[package]]
@@ -2218,6 +2219,16 @@ dependencies = [
  "spl-discriminator",
  "spl-pod",
  "spl-program-error",
+]
+
+[[package]]
+name = "streamflow-sdk"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e788ff1c1acd782474d6cd4197e86666db3c7d4ad8d043ab5953af10bf5bc61"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
 ]
 
 [[package]]
