@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::TeamAllocation;
+use super::team_member::TeamAllocation;
 
 #[account]
 pub struct Project {
